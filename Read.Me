@@ -1,0 +1,33 @@
+# Gerador_de_senhas
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Senhas</title>
+    <script>
+        function gerarSenha() {
+            var comprimento = document.getElementById("comprimento").value;
+            var caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            var senha = "";
+
+            for (var i = 0; i < comprimento; i++) {
+                var indice = Math.floor(Math.random() * caracteres.length);
+                senha += caracteres.charAt(indice);
+            }
+
+            document.getElementById("senhaGerada").value = senha;
+        }
+    </script>
+</head>
+<body>
+    <h1>Gerador de Senhas</h1>
+    <label for="comprimento">Comprimento da Senha:</label>
+    <input type="number" id="comprimento" min="1" max="100" value="8">
+    <br><br>
+    <button onclick="gerarSenha()">Gerar Senha</button>
+    <br><br>
+    <label for="senhaGerada">Senha Gerada:</label>
+    <input type="text" id="senhaGerada" readonly>
+</body>
+</html>
+
+
