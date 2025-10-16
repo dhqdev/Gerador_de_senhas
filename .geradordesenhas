@@ -1,31 +1,205 @@
-# Gerador_de_senhas
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Gerador de Senhas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas Seguro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="text"] {
+            background-color: #eee;
+            font-weight: bold;
+            color: #333;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .options div {
+            display: flex;
+            align-items: center;
+        }
+        .options input {
+            margin-right: 8px;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-generate {
+            background-color: #007bff;
+        }
+        .btn-generate:hover {
+            background-color: #0056b3;
+        }
+        .btn-copy {
+            background-color: #28a745;
+            margin-top: 10px;
+        }
+        .btn-copy:hover {
+            background-color: #218838;
+        }
+        .result-container {
+            position: relative;
+        }
+        .copy-feedback {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #333;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Gerador de Senhas</h1>
+
+        <div class="input-group result-container">
+            <label for="senhaGerada">Senha Gerada:</label>
+            <input type="text" id="senhaGerada" readonly placeholder="Sua senha segura aparecerá aqui...">
+            <span id="copyFeedback" class="copy-feedback">Copiado!</span>
+        </div>
+        <button class="btn btn-copy" onclick="copiarSenha()">Copiar Senha</button>
+
+        <hr style="margin: 20px 0; border: 1px solid #eee;">
+
+        <div class="input-group">
+            <label for="comprimento">Comprimento da Senha: <span id="comprimentoValor">12</span></label>
+            <input type="range" id="comprimento" min="4" max="32" value="12" oninput="document.getElementById('comprimentoValor').textContent = this.value;">
+        </div>
+
+        <div class="input-group">
+            <label>Incluir Caracteres:</label>
+            <div class="options">
+                <div>
+                    <input type="checkbox" id="incluirMaiusculas" checked>
+                    <label for="incluirMaiusculas">Maiúsculas (A-Z)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="incluirMinusculas" checked>
+                    <label for="incluirMinusculas">Minúsculas (a-z)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="incluirNumeros" checked>
+                    <label for="incluirNumeros">Números (0-9)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="incluirSimbolos" checked>
+                    <label for="incluirSimbolos">Símbolos (!@#$)</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-generate" onclick="gerarSenha()">Gerar Senha</button>
+    </div>
+
     <script>
         function gerarSenha() {
-            var comprimento = document.getElementById("comprimento").value;
-            var caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-            var senha = "";
+            const comprimento = document.getElementById("comprimento").value;
+            
+            const incluirMaiusculas = document.getElementById("incluirMaiusculas").checked;
+            const incluirMinusculas = document.getElementById("incluirMinusculas").checked;
+            const incluirNumeros = document.getElementById("incluirNumeros").checked;
+            const incluirSimbolos = document.getElementById("incluirSimbolos").checked;
 
-            for (var i = 0; i < comprimento; i++) {
-                var indice = Math.floor(Math.random() * caracteres.length);
-                senha += caracteres.charAt(indice);
+            const maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const minusculas = "abcdefghijklmnopqrstuvwxyz";
+            const numeros = "0123456789";
+            const simbolos = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+
+            let caracteres = "";
+            if (incluirMaiusculas) caracteres += maiusculas;
+            if (incluirMinusculas) caracteres += minusculas;
+            if (incluirNumeros) caracteres += numeros;
+            if (incluirSimbolos) caracteres += simbolos;
+
+            if (caracteres === "") {
+                alert("Por favor, selecione pelo menos um tipo de caractere!");
+                return;
+            }
+
+            let senha = "";
+            const array = new Uint32Array(comprimento);
+            window.crypto.getRandomValues(array); // API mais segura para aleatoriedade
+
+            for (let i = 0; i < comprimento; i++) {
+                senha += caracteres[array[i] % caracteres.length];
             }
 
             document.getElementById("senhaGerada").value = senha;
         }
+
+        function copiarSenha() {
+            const senhaGeradaInput = document.getElementById("senhaGerada");
+            const senha = senhaGeradaInput.value;
+
+            if (!senha) {
+                alert("Gere uma senha antes de tentar copiar!");
+                return;
+            }
+
+            navigator.clipboard.writeText(senha).then(() => {
+                const feedback = document.getElementById("copyFeedback");
+                feedback.style.opacity = 1;
+                setTimeout(() => {
+                    feedback.style.opacity = 0;
+                }, 2000);
+            });
+        }
+        
+        // Gera uma senha inicial ao carregar a página
+        window.onload = gerarSenha;
     </script>
-</head>
-<body>
-    <h1>Gerador de Senhas</h1>
-    <label for="comprimento">Comprimento da Senha:</label>
-    <input type="number" id="comprimento" min="1" max="100" value="8">
-    <br><br>
-    <button onclick="gerarSenha()">Gerar Senha</button>
-    <br><br>
-    <label for="senhaGerada">Senha Gerada:</label>
-    <input type="text" id="senhaGerada" readonly>
 </body>
 </html>
