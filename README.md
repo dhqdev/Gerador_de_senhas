@@ -1,6 +1,7 @@
 # 🚀 Gerador de Senhas Seguro
 
-![Prévia do Gerador de Senhas](https://i.imgur.com/8zYJ5hA.png)
+<img width="534" height="628" alt="image" src="https://github.com/user-attachments/assets/448bb180-8571-487b-8b23-eca938fad218" />
+
 
 Um gerador de senhas moderno, seguro e fácil de usar, construído com HTML, CSS e JavaScript puros. Crie senhas fortes e personalizadas diretamente no seu navegador. Este projeto é um único arquivo `.html`, tornando-o extremamente leve e portátil.
 
